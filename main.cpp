@@ -1,14 +1,18 @@
-#include <DataLoader.h>
-#include <Detector.h>
-#include <Matcher.h>
+#include "BundleAdjuster.h"
+#include "DataLoader.h"
+#include "Detector.h"
+#include "Matcher.h"
 
 #include <opencv2/highgui/highgui.hpp>
+
+#include <iostream>
 
 int main() {
     KITTILoader kitti("/run/media/tanmay/PATRIOT/Datasets/KITTI_Odom/dataset/sequences/00");
 
     Detector feat;
     Matcher matcher;
+    BundleAdjuster ba;
 
     cv::Mat lastImg;
     std::vector<cv::KeyPoint> lastKeypoints;
@@ -21,12 +25,18 @@ int main() {
         // Get keypoints and descriptors
         std::vector<cv::KeyPoint> keypoints;
         cv::Mat descriptors;
-        feat.getDetector()->detectAndCompute(img, cv::Mat(), keypoints, descriptors);
+        feat.getDetector()->detectAndCompute(img, cv::noArray(), keypoints, descriptors);
 
         if (numFrames > 0) {
             // Compute matches from the last frame
             auto matchedPoints =
                 matcher.match(descriptors, lastDescriptors, keypoints, lastKeypoints);
+
+            std::cout << "Matched " << matchedPoints.size() << " points" << std::endl;
+            // Compute the fundamental matrix
+            cv::Matx33d fundamental = ba.computeFundamentalMatrix(matchedPoints);
+
+            std::cout << "Fundamental matrix:\n" << fundamental << std::endl;
         }
 
         // keypoint img

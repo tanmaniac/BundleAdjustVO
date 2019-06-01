@@ -5,7 +5,16 @@ project(BundleAdjustment)
 # Third parties
 ########################
 
-find_package(OpenCV REQUIRED core imgproc imgcodecs highgui cudafilters cudaimgproc features2d xfeatures2d videoio)
+find_package(OpenCV REQUIRED core 
+                             imgproc 
+                             imgcodecs 
+                             highgui 
+                             cudafilters 
+                             cudaimgproc 
+                             features2d 
+                             xfeatures2d 
+                             videoio
+                             sfm)
 find_package(Boost REQUIRED COMPONENTS filesystem)
 find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 find_package(Ceres REQUIRED)
